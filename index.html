@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CAC30 - Dressing Responsable</title>
+
+  <style>
+    :root{
+      --primary:#2a52da;
+      --secondary:#1A798D;
+      --bg:#f4f6fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        linear-gradient(180deg, rgba(42,82,218,.06), rgba(26,121,141,.06)),
+        var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+
+    .app{
+      width:100%;
+      max-width:420px;
+      background:var(--card);
+      border-radius:20px;
+      padding:28px;
+      box-shadow:0 20px 40px rgba(15,23,42,.12);
+    }
+
+    h1{
+      margin:0 0 6px;
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .subtitle{
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:24px;
+    }
+
+    label{
+      font-size:12px;
+      font-weight:600;
+      color:var(--muted);
+      margin-bottom:6px;
+      display:block;
+    }
+
+
+    input{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      outline:none;
+      
+      margin-bottom:20px;
+      text-align:center;
+    }
+
+    input:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(42,82,218,.15);
+    }
+
+    input::placeholder {
+        opacity: 0.7;
+        font-style: italic;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:26px;
+    }
+
+    button{
+      border:none;
+      border-radius:14px;
+      padding:14px;
+      font-size:15px;
+      font-weight:700;
+      color:white;
+      cursor:pointer;
+    }
+
+    .give{
+      background:linear-gradient(135deg, var(--primary), #4f6df5);
+    }
+
+    .adopt{
+      background:linear-gradient(135deg, var(--secondary), #26a1b2);
+    }
+
+    .stats{
+      border-top:1px solid var(--border);
+      padding-top:20px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    
+    .stat{
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.08);
+    }
+
+
+    
+    .stat .label{
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    }
+
+
+    .stat .value{
+      font-size:30px;
+      font-weight:900;
+      margin-top:6px;
+      color:var(--primary);
+    }
+
+
+    .stats.highlight{
+    margin: 24px 0 28px;
+    padding: 18px;
+    background:
+        linear-gradient(
+        135deg,
+        rgba(42,82,218,.08),
+        rgba(26,121,141,.08)
+        );
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    }
+
+
+    .stat.secondary .value{
+      color:var(--secondary);
+    }
+
+    .msg{
+      font-size:14px;
+      color:var(--primary);
+    }
+
+    /* ===== LOADER PLEIN ÉCRAN ===== */
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(255,255,255,.85);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+    }
+
+    .overlay.visible{
+      opacity:1;
+      pointer-events:all;
+    }
+
+    .spinner{
+      width:48px;
+      height:48px;
+      border:4px solid rgba(42,82,218,.2);
+      border-top-color:var(--primary);
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+    }
+
+    @keyframes spin{
+      to{ transform:rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+    <h1>Dressing Responsable by CAC30</h1>
+    <div class="subtitle"> Tu ne le portes pas ? donne-le ! </div>
+
+    <!-- ⭐ STATS MISES EN VALEUR -->
+    <div class="stats highlight">
+    
+        
+            <div class="stat primary">
+                <div class="label">Stock</div>
+                <div class="value" id="stock">–</div>
+            </div>
+
+            <div class="stat secondary">
+                <div class="label">Items adoptés</div>
+                <div class="value" id="adopted">–</div>
+            </div>
+        
+    </div>
+
+
+    <!-- FORMULAIRE -->
+    
+    <label for="pseudo">Pseudo</label>
+    <input
+    id="pseudo"
+    type="text"
+    placeholder="superstar2codyssée"
+    maxlength="30"
+    />
+
+    <label for="qty">Quantité</label>
+    <input id="qty" type="number" min="1" placeholder="2" />
+
+    <div class="actions">
+      <button class="give" id="btnGive">J’ai donné 📦</button>
+      <button class="adopt" id="btnAdopt">J’ai adopté 🎉</button>
+    </div>
+
+     <div class="msg" id="msg"></div>
+
+  </div>
+
+  <!-- Loader plein écran -->
+  <div class="overlay" id="overlay">
+    <div class="spinner"></div>
+  </div>
+
+<script>
+  //const API_URL = "https://script.google.com/macros/s/AKfycbz2UhNo1d-iKDiErDZsDE43qwMDRCBerJX0TOHidTrMiTEi-ZxHeMG6SXMAsqnTLfFj/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxuWFAVrOKRYeXmHS68BWZtgbT9Ui37eaAgdHIO3usFHTJTIyDtbDRm5tLpYWYUsDaR/exec";
+
+  
+  const qtyEl = document.getElementById("qty");
+  const stockEl = document.getElementById("stock");
+  const adoptedEl = document.getElementById("adopted");
+  const msgEl = document.getElementById("msg");
+  const overlay = document.getElementById("overlay");
+  const pseudoEl = document.getElementById("pseudo");
+
+  document.getElementById("btnGive").onclick = () => send("give");
+  document.getElementById("btnAdopt").onclick = () => send("adopt");
+
+  refresh();
+  //setInterval(refresh, 5000);
+
+  function showLoader(show){
+    overlay.classList.toggle("visible", show);
+  }
+
+  async function refresh(){
+    try{
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      update(data);
+    }catch(e){}
+  }
+
+  async function send(action){
+    const qty = parseInt(qtyEl.value,10);
+    const pseudo = pseudoEl.value.trim();
+
+    if (!pseudo) {
+    msgEl.textContent = "Renseigne un super pseudo !";
+    return;
+    }
+
+    if(!qty || qty <= 0){
+      msgEl.textContent = "Un Chiffre, un chiffre please.";
+      return;
+    }
+
+    showLoader(true);
+    msgEl.textContent = "";
+
+    try{
+      
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action, qty, pseudo })
+        });
+
+      const data = await res.json();
+
+      if(data.ok === false){
+        msgEl.textContent = data.error;
+      }else{
+        update(data);
+        qtyEl.value="";
+        pseudoEl.value = "";
+        msgEl.textContent="😄 Merci ✅";
+      }
+    }catch(e){
+      msgEl.textContent="Erreur réseau.";
+    }
+
+    showLoader(false);
+  }
+
+  function update(data){
+    stockEl.textContent = data.stock ?? "–";
+    adoptedEl.textContent = data.adopted ?? "–";
+  }
+</script>
+</body>
+</html>
